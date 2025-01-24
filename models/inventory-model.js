@@ -28,4 +28,21 @@ async function getInventoryByClassificationId(classification_id) {
   }
 }
 
-module.exports = {getClassifications, getInventoryByClassificationId};
+/* ***************************
+ *  Get vehicle details by inventory ID
+ * ************************** */
+async function getVehicleById(vehicleId) {
+  try {
+    const data = await pool.query(
+      `SELECT * FROM public.inventory 
+      WHERE inv_id = $1`,
+      [vehicleId]
+    );
+    return data.rows[0]; // Return the first result since it's a single vehicle
+  } catch (error) {
+    console.error("getVehicleById error " + error);
+    throw error; // Throw error to be handled by the controller
+  }
+}
+
+module.exports = {getClassifications, getInventoryByClassificationId, getVehicleById};
