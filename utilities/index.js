@@ -56,28 +56,23 @@ Util.buildClassificationGrid = async function(data){
 /* *******************************
  * Format vehicle data for detail page
  ******************************* */
-Util.formatVehicleData = (vehicleData) => {
-  // Format the price as USD currency
-  const price = new Intl.NumberFormat('en-US', {
-    style: 'currency',
-    currency: 'USD'
-  }).format(vehicleData.inv_price);
+Util.formatVehicleData = (data) => {
+  const priceFormatted = Number(data.inv_price).toLocaleString('en-US')
+  const milesFormatted = data.inv_miles.toLocaleString('en-US')
 
-  // Format the mileage with commas
-  const mileage = new Intl.NumberFormat('en-US').format(vehicleData.inv_mileage);
-
-  // Prepare the data to be passed to the view
-  return {
-    imageUrl: vehicleData.inv_image_url,  // Full-size image URL
-    make: vehicleData.inv_make,
-    model: vehicleData.inv_model,
-    year: vehicleData.inv_year,
-    price: price,  // Formatted price
-    mileage: mileage,  // Formatted mileage
-    description: vehicleData.inv_description,
-    classification: vehicleData.classification_name  // Assuming classification_name is part of the joined data
-  };
-};
+  return `
+      <div class="vehicle-details">
+          <img src="${data.inv_image}" alt="Image of ${data.inv_make} ${data.inv_model} on CSE Motors">
+          <div>
+              <h2>${data.inv_make} ${data.inv_model} Details</h2>
+              <p><span class="vehicle-details-title">Price: </span>$${priceFormatted}</p>
+              <p><span class="vehicle-details-title">Description: </span>${data.inv_description}</p>
+              <p><span class="vehicle-details-title">Color: </span>${data.inv_color}</p>
+              <p><span class="vehicle-details-title">Miles: </span>${milesFormatted}</p>
+          </div>
+      </div>
+  `
+}
 
 
 /* ****************************************
