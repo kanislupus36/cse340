@@ -1,0 +1,45 @@
+<% if (title) { %>
+    <h1>
+        <%= title %>
+    </h1>
+    <% } else { res.redirect('/') } %>
+        <%- messages() %>
+            <% if (errors) { %>
+                <ul class="notice">
+                    <% errors.array().forEach(error=> { %>
+                        <li>
+                            <%= error.msg %>
+                        </li>
+                        <% }) %>
+                </ul>
+                <% } %>
+                    <!--Contain a form for adding a new vehicle to the inventory table.-->
+                    <form id="addInventory" action="/inv/add-inventory" method="post">
+                        <label for="inv_make"><strong>Inventory Make</strong></label>
+                        <input type="text" name="inv_make" pattern="^[a-zA-Z\s]*$" id="invMake" required
+                            value="<%= locals.inv_make %>">
+                        <label for="inv_model"><strong>Inventory Model</strong></label>
+                        <input type="text" name="inv_model" pattern="^[a-zA-Z\s]*$" id="invModel" required
+                            value="<%= locals.inv_model %>">
+                        <label for="inv_year"><strong>Inventory Year</strong></label>
+                        <input type="number" name="inv_year" pattern="\d{4}" maxlength="4" id="invYear" required
+                            value="<%= locals.inv_year %>">
+                        <label for="inv_description"><strong>Inventory Description</strong></label>
+                        <input type="text" name="inv_description" id="invDescription" required
+                            value="<%= locals.inv_description %>">
+                        <label for="inv_image"><strong>Inventory Image</strong></label>
+                        <input type="text" name="inv_image" id="invImage" required value="/images/vehicles/no-image.png"
+                            readonly>
+                        <label for="inv_thumbnail"><strong>Inventory Thumbail</strong></label>
+                        <input type="text" name="inv_thumbnail" id="classificationName" required
+                            value="/images/vehicles/no-image-tn.png" readonly>
+                        <label for="inv_price"><strong>Inventory Price</strong></label>
+                        <input type="number" name="inv_price" id="invPrice" required value="<%= locals.inv_price %>">
+                        <label for="inv_miles"><strong>Inventory Miles</strong></label>
+                        <input type="number" name="inv_miles" id="invMiles" required value="<%= locals.inv_miles %>">
+                        <label for="inv_color"><strong>Inventory Color</strong></label>
+                        <input type="text" name="inv_color" pattern="^[a-zA-Z\s]*$" id="invColor" required
+                            value="<%= locals.inv_color %>">
+                        <%- select_classification %>
+                            <input type="submit" value="Add Inventory" />
+                    </form>
