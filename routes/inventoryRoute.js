@@ -10,7 +10,7 @@ router.get("/type/:classificationId", utilities.handleErrors(invController.build
 // Route to build each item view 
 router.get("/detail/:itemId", utilities.handleErrors(invController.buildInventoryItem));
 
-router.get("/management", utilities.handleErrors(invController.buildManagement));
+//router.get("/management", utilities.handleErrors(invController.buildManagement));
 // Route to add classification 
 
 router.post("/classification", invValidate.addClassificationRules(), invValidate.checkClassificationData, utilities.handleErrors(invController.addNewClassification));
@@ -18,5 +18,9 @@ router.get("/add-classification", utilities.handleErrors(invController.buildClas
 
 router.get("/add-inventory", utilities.handleErrors(invController.buildInventoryForm));
 router.post("/add-inventory", invValidate.addInventoryRules(), invValidate.checkInventoryData, utilities.handleErrors(invController.addNewInventory));
+
+router.get("/inv/getInventory/:classification_id", utilities.handleErrors(invController.getInventoryJSON))
+
+router.get("/", utilities.handleErrors(invController.buildManagement));
 
 module.exports = router;

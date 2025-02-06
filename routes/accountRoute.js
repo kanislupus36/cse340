@@ -20,8 +20,8 @@ router.post(
 // Process the login request
 router.post(
   "/login",
-  regValidate.loginRules(),
   regValidate.checkLoginData,
+  regValidate.loginRules(),
   utilities.handleErrors(accountController.accountLogin)
 )
 
