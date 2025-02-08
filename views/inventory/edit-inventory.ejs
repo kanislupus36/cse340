@@ -29,7 +29,7 @@
                         <label for="inv_image"><strong>Inventory Image</strong></label>
                         <input type="text" name="inv_image" id="inv_image" required value="<%= locals.inv_image %>">
                         readonly>
-                        <label for="inv_thumbnail"><strong>Inventory Thumbail</strong></label>
+                        <label for="inv_thumbnail"><strong>Inventory Thumbnail</strong></label>
                         <input type="text" name="inv_thumbnail" id="inv_thumbnail" required
                             value="<%= locals.inv_thumbnail %>"> readonly>
                         <label for="inv_price"><strong>Inventory Price</strong></label>
@@ -39,8 +39,10 @@
                         <label for="inv_color"><strong>Inventory Color</strong></label>
                         <input type="text" name="inv_color" pattern="^[a-zA-Z\s]*$" id="inv_color" required
                             value="<%= locals.inv_color %>">
-                        <%- select_classification %>
+                        <%- classificationSelect %>
                             <input type="submit" id="update-vehicle" value="Update Vehicle" disabled />
-                            <input type="hidden" name="inv_id" <% if(locals.inv_id) { %> value="<%= locals.inv_id %>"
-                                <% } %>>
+                            <input type="hidden" name="inv_id"
+                            <% if(locals.inv_id) { %> value="<%= locals.inv_id %>"
+                            <% } %>>
                     </form>
+                    <script src="../../js/inv-update.js"></script>

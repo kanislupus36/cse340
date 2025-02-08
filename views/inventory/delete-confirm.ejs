@@ -1,0 +1,34 @@
+<% if (title) { %>
+    <h1>
+        <%= title %>
+    </h1>
+    <% } else { res.redirect('/') } %>
+        <%- messages() %>
+            <% if (errors) { %>
+                <ul class="notice">
+                    <% errors.array().forEach(error=> { %>
+                        <li>
+                            <%= error.msg %>
+                        </li>
+                        <% }) %>
+                </ul>
+                <% } %>
+                    <!--Contain a form for editting a new vehicle to the inventory table.-->
+                    <form id="deleteForm" action="/inv/delete/<%= locals.inv_id %>" method="post">
+                        <label for="inv_make"><strong>Inventory Make</strong></label>
+                        <input type="text" name="inv_make" pattern="^[a-zA-Z\s]*$" id="inv_make" required readonly
+                            value="<%= locals.inv_make %>">
+                        <label for="inv_model"><strong>Inventory Model</strong></label>
+                        <input type="text" name="inv_model" pattern="^[a-zA-Z\s]*$" id="inv_model" required readonly
+                            value="<%= locals.inv_model %>">
+                        <label for="inv_year"><strong>Inventory Year</strong></label>
+                        <input type="number" name="inv_year" id="inv_year" required readonly
+                            value="<%= locals.inv_year %>">
+                        <label for="inv_price"><strong>Inventory Price</strong></label>
+                        <input type="number" name="inv_price" id="inv_price" required readonly
+                            value="<%= locals.inv_price %>">
+                        <small>Confirm Deletion - The delete is permanent.</small>
+                        <input type="hidden" name="inv_id" <% if(locals.inv_id) { %> value="<%= locals.inv_id %>"
+                            <% } %>>
+                                <input type="submit" id="delete-vehicle" value="Delete Vehicle" />
+                    </form>
