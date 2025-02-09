@@ -25,6 +25,11 @@
                             </h2>
                             <h3>Inventory Management</h3>
                             <p><a href="/inv/management">Manage Inventory</a></p>
-                    
+                    <!--Project Enhancement admin management-->
+                    <% if (locals.accountData.account_type=='Admin' ) { %>
+                        <h3>Admin Accounts Management</h3>
+                        <p><a href="/account/admin">Manage Accounts</a></p>
+                        <% } %>
+
                                     <% } %>
                                         <% } %>

@@ -1,0 +1,59 @@
+<!--Project Enhancement admin management view to delete accounts-->
+
+<% if (title) { %>
+    <h1>
+        <%= title %>
+    </h1>
+    <% } else { res.redirect('/') } %>
+
+        <%- messages() %>
+
+            <% if (errors) { %>
+                <ul class="notice">
+                    <% errors.array().forEach(error=> { %>
+                        <li>
+                            <%= error.msg %>
+                        </li>
+                        <% }) %>
+                </ul>
+                <% } %>
+
+                    <table class="admin-accounts">
+                        <thead>
+                            <tr>
+                                <!--First + Last -->
+                                <td>Full Name</td>
+                                <td>Email</td>
+                                <td>Type</td>
+                                <td>&nbsp;</td>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <% if (accounts && accounts.length> 0) { %>
+                                <% accounts.forEach(account=> { %>
+                                    <tr>
+                                        <td>
+                                            <%= account.account_firstname + ' ' + account.account_lastname %>
+                                        </td>
+                                        <td>
+                                            <%= account.account_email %>
+                                        </td>
+                                        <td>
+                                            <%= account.account_type %>
+                                        </td>
+                                        <td>
+                                            <form action="/account/admin/<%= account.account_id %>" method="post"
+                                                style="display:inline;">
+                                                <button type="submit" title="Click to Delete Account">Delete</button>
+                                            </form>
+                                        </td>
+                                    </tr>
+                                    <% }) %>
+                                        <% } else { %>
+                                            <tr>
+                                                <td colspan="4">No accounts found.</td>
+                                            </tr>
+                                            <% } %>
+                        </tbody>
+                    </table>
+                    <noscript>JavaScript must be enabled to use this page.</noscript>

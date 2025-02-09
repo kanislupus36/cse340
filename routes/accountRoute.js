@@ -13,6 +13,9 @@ router.post('/account-update', regValidate.updateRules(), regValidate.checkUpdat
 router.get("/logout", utilities.handleErrors(accountController.logOutUser));
 router.post('/password', regValidate.passwordRules(), regValidate.checkUpdatePassword, utilities.handleErrors(accountController.passwordUpdateHandler));
 
+//Project Enhancement Admin delete account process
+router.get('/admin', utilities.handleErrors(accountController.buildAdminManagement));
+router.post('/admin/:accountId', utilities.handleErrors(accountController.deleteAccount));
 
 
 // Process the registration data

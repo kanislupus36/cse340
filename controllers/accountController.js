@@ -248,6 +248,49 @@ if (accountData) {
 }
 }
 
+/* *****************************
+*   Project Enhancement Build admin managment view to delete accounts
+* *************************** */
+async function buildAdminManagement(req, res, next) {
+  try {
+      let nav = await utilities.getNav()
+      // get all the accounts
+      const accounts = await accountModel.getAllAccounts()
+      res.render("./account/admin", {
+          title: "Admin Accounts Management",
+          nav,
+          accounts,
+          errors: null,
+      })
+  } catch (error) {
+      console.error("Error ", error.message)
+      next(error)
+  }
+}
+
+/* *****************************
+*   Project Enhancement delete account
+* *************************** */
+async function deleteAccount(req, res, next) {
+  try {
+      let accountId = parseInt(req.params.accountId)
+      let nav = await utilities.getNav()
+      // delete account
+      const accountDeleted = await accountModel.deleteAccount(accountId)
+      // get all the accounts less the deleted
+      const accounts = await accountModel.getAllAccounts()
+      req.flash("success", `Account for ${accountDeleted.account_firstname + ' ' + accountDeleted.account_lastname} was successfully deleted.`)
+      res.render("./account/admin", {
+          title: "Admin Accounts Management",
+          nav,
+          accounts,
+          errors: null,
+      })
+  } catch (error) {
+      next(error)
+  }
+}
+
   
-  module.exports = { buildLogin, buildRegister, registerAccount, accountLogin, buildManagement, updateAccountView, getUpdateAccountView, logOutUser, passwordUpdateHandler }
+  module.exports = { buildLogin, buildRegister, registerAccount, accountLogin, buildManagement, updateAccountView, getUpdateAccountView, logOutUser, passwordUpdateHandler, buildAdminManagement, deleteAccount }
   

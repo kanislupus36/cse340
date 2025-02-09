@@ -77,6 +77,32 @@ async function updatePassword(account_id, account_password) {
   }
 }
 
+/* *****************************
+*   Project Enhancement Get all accounts
+* *************************** */
+async function getAllAccounts() {
+  try {
+      const sql = "SELECT * FROM account ORDER BY account_firstname ASC;"
+      const data = await pool.query(sql)
+      return data.rows
+  } catch (err) {
+
+  }
+}
+
+/* *****************************
+*   Project Enhancement Delet Account
+* *************************** */
+async function deleteAccount(account_id) {
+    try {
+        const sql = "DELETE FROM account WHERE account_id = $1 RETURNING *"
+        const data = await pool.query(sql, [account_id])
+        return data.rows[0]
+    } catch (error) {
+        console.error(error.message)
+        return error.message
+    }
+}
 
 
-  module.exports = { registerAccount, checkExistingEmail, getAccountByEmail, updateAccount, getAccountById, updatePassword }
+  module.exports = { registerAccount, checkExistingEmail, getAccountByEmail, updateAccount, getAccountById, updatePassword, getAllAccounts, deleteAccount }
