@@ -2,6 +2,7 @@ const utilities = require("../utilities/")
 const accountModel = require("../models/account-model")
 const bcrypt = require("bcryptjs")
 const jwt = require("jsonwebtoken")
+const { locals } = require("ejs")
 require("dotenv").config()
 
 /* ****************************************
@@ -129,6 +130,124 @@ async function buildManagement(req, res, next) {
       errors: null
   })
 }
+
+async function getUpdateAccountView(req, res, next) {
+  let nav = await utilities.getNav()
+  // get account info by its id
+  try {
+      const account_id = parseInt(req.params.accountId)
+      let accountData = await accountModel.getAccountById(account_id)
+      res.locals.accountData = accountData
+      res.render("./account/account-update", {
+          title: "Update Account Information",
+          nav,
+          errors: null,
+      })
+  } catch (error) {
+      next(error)
+  }
+}
+/* ***************************
+*  Update Account Data
+* ************************** */
+async function updateAccountView(req, res, next) {
+  let nav = await utilities.getNav()
+  const {
+      account_firstname,
+      account_lastname,
+      account_email,
+      account_id
+  } = req.body
+
+  // updateResult already has updated data due to RETURNING * statement, so we don't need to fetch it again
+  const updateResult = await accountModel.updateAccount(
+      account_firstname,
+      account_lastname,
+      account_email,
+      account_id
+  )
+  if (updateResult) {
+      res.locals.accountData = updateResult
+      req.flash("success", `Information for ${updateResult.account_firstname + ' ' + updateResult.account_lastname} was successfully updated.`)
+      res.render("account/account-management", { title: 'Updated Information', errors: null, nav })
+  } else {
+      const accountData = await accountModel.getAccountByEmail(account_email)
+      if (!accountData) {
+          req.flash("notice", "Sorry, the updating your account failed.")
+          res.status(500).render("account/login", {
+              title: "Update Account",
+              nav,
+              errors: null,
+              account_email,
+          })
+          return
+      }
+  }
+}
+
+async function logOutUser(req, res, next) {
+  if (req.cookies.jwt) {
+      res.clearCookie("jwt")
+      // clear account info from the server
+      res.locals.accountData = {}
+      res.locals.loggedin = 0
+      return res.redirect("/account/login")
+  }
+}
+
+
+
+/* ***************************
+ *  Update Account Password
+ * ************************** */
+async function passwordUpdateHandler(req, res, next) {
+  let nav = await utilities.getNav()
+  const { account_id, account_password } = req.body
+  // fetch account info here to handle success or failure
+  let accountData = await accountModel.getAccountById(account_id)
+
+  // Hash the password before storing
+  let hashedPassword = ''
+  try {
+      // regular password and cost (salt is generated automatically)
+      hashedPassword = await bcrypt.hashSync(account_password, 10)
+  } catch (error) {
+      res.locals.accountData = accountData
+      req.flash("notice", 'Sorry, there was an error updating the password.')
+      res.status(500).render("account/account-management", {
+          title: "Update Information",
+          nav,
+          errors: null,
+      })
+  }
+   // make actual change
+   try {
+    accountData = await accountModel.updatePassword(account_id, hashedPassword)
+} catch (error) {
+    console.error('error ' + error)
+}
+
+res.locals.accountData = accountData
+if (accountData) {
+    req.flash(
+        "success",
+        `Congratulations, your password has been changed!`
+    )
+
+    res.status(201).render("account/account-management", {
+        title: "Update Information",
+        nav,
+        errors: null,
+    })
+} else {
+    req.flash("notice", "Sorry, the update of the password failed.")
+    res.status(501).render("account/account-management", {
+        title: "Update Information",
+        nav
+    })
+}
+}
+
   
-  module.exports = { buildLogin, buildRegister, registerAccount, accountLogin, buildManagement }
+  module.exports = { buildLogin, buildRegister, registerAccount, accountLogin, buildManagement, updateAccountView, getUpdateAccountView, logOutUser, passwordUpdateHandler }
   

@@ -113,6 +113,30 @@ Util.buildClassificationList = async function (classification_id = null) {
   return classificationList
 }
 
+/* **************************************
+* Build the account update form view HTML
+* ************************************ */
+Util.buildUpdateAccountFormView = async function () {
+  let form = ''
+  form =
+    `
+    <form id="update-form" action="/account/update" method="post">
+      <label for="account_firstname">First Name</label>
+      <input required id="account_firstname" type="text" name="account_firstname" />
+      <label for="account_lastname">Last Name</label>
+      <input required id="account_lastname" name="account_lastname" type="text"/>
+      <label for="account_email">Email</label>
+      <input required id="account_email" name="account_email" type="email">
+      <label for="account_password">Password</label>
+      <small id="invalid-input">There must be at least 12 characters, one must be a number, one must be a lowercase letter, one must be a capital letter, and one must be a non-alphanumeric character.</small>
+      <input required name="account_password" pattern="^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[^a-zA-Z0-9])(?!.*\s).{12,}$" type="password" minlength="12">
+      <input id="register-submit" type="submit" value="Register"/>
+      <p>Already have an account? <a href="/account/login">LogIn</a></p>
+    </form>
+    `
+  return form
+}
+
 
 /* ****************************************
  * Middleware For Handling Errors
@@ -125,6 +149,8 @@ Util.handleErrors = fn => (req, res, next) => Promise.resolve(fn(req, res, next)
 * Middleware to check token validity
 **************************************** */
 Util.checkJWTToken = (req, res, next) => {
+  let restricted = ["/inv/management", "/inv/edit", "/inv/add-classification", "/inv/add-inventory"]
+  let isRestricted = restricted.some((route) => req.path.includes(route));
   if (req.cookies.jwt) {
    jwt.verify(
     req.cookies.jwt,
@@ -136,10 +162,21 @@ Util.checkJWTToken = (req, res, next) => {
       return res.redirect("/account/login")
      }
      res.locals.accountData = accountData
+     if (isRestricted && accountData.account_type == 'Client') {
+      req.flash('notice', 'You do not have authorization to view this page, please log in.')
+      // log user out as he's trying to mess up
+      res.clearCookie("jwt")
+      return res.redirect("/account/login")
+    }
      res.locals.loggedin = 1
      next()
     })
   } else {
+    if (isRestricted) {
+      req.flash('notice', 'You do not have authorization to view this page, please log in.')
+      // log user out as he's trying to mess up
+      return res.redirect("/account/login")
+    }
    next()
   }
  }
